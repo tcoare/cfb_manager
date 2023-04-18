@@ -1,7 +1,4 @@
-use bevy::{
-    prelude::*,
-    winit::WinitSettings,
-};
+use bevy::{prelude::*, winit::WinitSettings};
 use main_menu::MainMenuPlugin;
 use systems::spawn_camera;
 
@@ -10,7 +7,13 @@ mod systems;
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.set(WindowPlugin {
+            primary_window: Some(Window {
+                title: "College Football Manager".into(),
+                ..default()
+            }),
+            ..default()
+        }))
         // Only run the app when there is user input. This will significantly reduce CPU/GPU use.
         .insert_resource(WinitSettings::desktop_app())
         .add_state::<AppState>()
