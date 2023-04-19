@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::main_menu::components::{MainMenu, PlayButton, QuitButton};
+use super::components::{MainMenu, PlayButton, QuitButton};
 
 pub fn spawn_main_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
     build_main_menu(&mut commands, &asset_server);
@@ -23,7 +23,7 @@ pub fn build_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>)
                 gap: Size::new(Val::Px(8.0), Val::Px(8.0)),
                 ..default()
             },
-            background_color: Color::BLUE.into(),
+            background_color: Color::GRAY.into(),
             ..default()
         })
         .with_children(|parent| {
