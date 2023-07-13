@@ -1,8 +1,13 @@
-use bevy::{prelude::*, window::PrimaryWindow, winit::WinitSettings};
+use bevy::{prelude::*, winit::WinitSettings};
+use bevy_egui::{egui, EguiContexts, EguiPlugin};
 
-mod main_menu;
+mod manager;
+mod menu;
+mod player;
 
-use main_menu::MainMenuPlugin;
+use manager::ManagerPlugin;
+use menu::MenuPlugin;
+use player::PlayerPlugin;
 
 fn main() {
     App::new()
@@ -13,27 +18,32 @@ fn main() {
             }),
             ..default()
         }))
-        // Only run the app when there is user input. This will significantly reduce CPU/GPU use.
         .insert_resource(WinitSettings::desktop_app())
-        .add_state::<AppState>()
-        .add_plugin(MainMenuPlugin)
+        .add_plugin(EguiPlugin)
         .add_startup_system(spawn_camera)
+        .add_system(configure_visuals)
+        .add_state::<AppState>()
+        .add_plugin(MenuPlugin)
+        .add_plugin(ManagerPlugin)
+        .add_plugin(PlayerPlugin)
         .run();
 }
 
-#[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
+#[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, States)]
 pub enum AppState {
     #[default]
     MainMenu,
-    Game,
-    GameOver,
+    NewGame,
+    InGame,
 }
 
-pub fn spawn_camera(mut commands: Commands, window_query: Query<&Window, With<PrimaryWindow>>) {
-    let window = window_query.get_single().unwrap();
+fn spawn_camera(mut commands: Commands) {
+    commands.spawn(Camera2dBundle::default());
+}
 
-    commands.spawn(Camera2dBundle {
-        transform: Transform::from_xyz(window.width() / 2.0, window.height() / 2.0, 0.0),
-        ..default()
+fn configure_visuals(mut egui_ctx: EguiContexts) {
+    egui_ctx.ctx_mut().set_visuals(egui::Visuals {
+        window_rounding: 0.0.into(),
+        ..Default::default()
     });
 }
